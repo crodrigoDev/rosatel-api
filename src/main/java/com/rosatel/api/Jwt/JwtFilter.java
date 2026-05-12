@@ -5,12 +5,15 @@ import java.util.Arrays;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.w3c.dom.UserDataHandler;
 
 import com.rosatel.api.Services.JwtService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -37,12 +40,21 @@ public class JwtFilter extends OncePerRequestFilter {
                         .orElse(null);
         }
 
-        if(token != null && SecurityContextHolder.getContext().getAuthentication() == null){
-            String email = jwtService.extraerEmail(token);
-            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        if(token == null){
+            filterChain.doFilter(request, response);
+            return;
+        }
 
-            var authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-            SecurityContextHolder.getContext().setAuthentication(authToken);
+        if(SecurityContextHolder.getContext().getAuthentication() == null){
+            String email = jwtService.extraerEmail(token);
+            if(email != null){
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                if(jwtService.isTokenValid(token, userDetails)){
+                    var authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            }
         }
         filterChain.doFilter(request, response);
     }

@@ -4,10 +4,13 @@ package com.rosatel.api.Services;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import com.rosatel.api.Models.Usuario;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -39,5 +42,22 @@ public class JwtService {
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
+    }
+
+    public boolean isTokenValid(String token, UserDetails userDetails){
+        final String email = extraerEmail(token);
+        return (email.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    }
+
+    private boolean isTokenExpired(String token){
+        return extraerTodasClaims(token).getExpiration().before(new Date());
+    }
+
+    private Claims extraerTodasClaims(String token){
+        return Jwts.parserBuilder()
+            .setSigningKey(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()))
+            .build()
+            .parseClaimsJws(token)
+            .getBody();
     }
 }

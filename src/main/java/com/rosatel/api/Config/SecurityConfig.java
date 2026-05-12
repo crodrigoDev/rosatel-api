@@ -34,7 +34,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(authRequest ->
                 authRequest
                     .requestMatchers("/auth/**").permitAll()
-                    .anyRequest().authenticated()
+                    .requestMatchers("/productos/**").permitAll()
+                    .anyRequest().permitAll()
                 )
             .formLogin(formLogin -> formLogin.disable())
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
