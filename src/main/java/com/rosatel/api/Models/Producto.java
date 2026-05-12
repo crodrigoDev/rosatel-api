@@ -3,6 +3,7 @@ package com.rosatel.api.Models;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
@@ -20,6 +21,12 @@ public class Producto extends BaseEntity {
     private String detalle;
     private String descripcion;
     
+    @ManyToOne
+    @JoinColumn(name = "id_subcategoria", insertable = false, updatable = false)
+    @JsonBackReference
+    private Subcategoria subcategoria;
+    private Integer id_subcategoria;
+
     @ManyToMany
     @JsonIgnore
     @JoinTable(
