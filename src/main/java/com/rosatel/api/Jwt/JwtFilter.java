@@ -5,7 +5,6 @@ import java.util.Arrays;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.w3c.dom.UserDataHandler;
 
 import com.rosatel.api.Services.JwtService;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

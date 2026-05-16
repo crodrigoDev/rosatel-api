@@ -15,8 +15,8 @@ import jakarta.persistence.MappedSuperclass;
 public abstract class BaseEntity {
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private Date create_at;
+    private Date fecha_creacion;
     @LastModifiedDate
     @Column(nullable = false, updatable = false)
-    private Date updated_at;
+    private Date fecha_actualizacion;
 }

@@ -1,32 +1,26 @@
 package com.rosatel.api.Models;
 
+
 import java.util.HashSet;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-@Entity
+
 @Data
 @EqualsAndHashCode(callSuper = true, onlyExplicitlyIncluded = true)
-@Table(name = "subcategoria")
-public class Subcategoria extends BaseEntity {
+@Entity
+@Table(name = "ocasion")
+public class Ocasion extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Integer id;
-    @Column(nullable = false)
     private String detalle;
-    @ManyToOne
-    @JoinColumn(name = "id_categoria", insertable = false, updatable = false)
-    @JsonBackReference("categoria-subcategorias")
-    private Categoria categoria;
-    private Integer id_categoria;
-
-    @OneToMany(mappedBy = "subcategoria")
-    @JsonManagedReference("subcategoria-productos")
+    @ManyToMany(mappedBy = "ocasiones")
+    @JsonBackReference("producto-ocasion")
     private Set<Producto> productos = new HashSet<>();
 }

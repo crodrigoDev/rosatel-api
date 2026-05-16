@@ -27,8 +27,8 @@ public class JwtService {
         claims.put("id", usuario.getId());
 
         return Jwts.builder()
-                .setSubject(usuario.getUsername())
                 .setClaims(claims)
+                .setSubject(usuario.getUsername())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
                 .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()), SignatureAlgorithm.HS256)

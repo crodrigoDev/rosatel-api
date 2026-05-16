@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.rosatel.api.Models.Usuario;
 import com.rosatel.api.Repositories.UsuarioRepository;
-import com.rosatel.api.dtos.LoginRequestDTO;
-import com.rosatel.api.dtos.RegisterRequestDTO;
+import com.rosatel.api.dtos.Auth.LoginRequestDTO;
+import com.rosatel.api.dtos.Auth.RegisterRequestDTO;
 
 import lombok.RequiredArgsConstructor;
 

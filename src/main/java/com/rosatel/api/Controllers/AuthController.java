@@ -6,10 +6,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.rosatel.api.Models.ApiResponse;
 import com.rosatel.api.Models.Usuario;
 import com.rosatel.api.Services.AuthService;
-import com.rosatel.api.Services.JwtService;
-import com.rosatel.api.dtos.AuthResponseDTO;
-import com.rosatel.api.dtos.LoginRequestDTO;
-import com.rosatel.api.dtos.RegisterRequestDTO;
+import com.rosatel.api.dtos.Auth.AuthResponseDTO;
+import com.rosatel.api.dtos.Auth.LoginRequestDTO;
+import com.rosatel.api.dtos.Auth.RegisterRequestDTO;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -42,7 +41,11 @@ public class AuthController {
 
         response.addCookie(cookie);
         AuthResponseDTO authresponse = new AuthResponseDTO(usuario.getId(),usuario.getNombres(),usuario.getEmail());
-        ApiResponse<AuthResponseDTO> apiresponse = new ApiResponse<>(false, "Incio Exitoso", authresponse);
+        ApiResponse<AuthResponseDTO> apiresponse = ApiResponse.<AuthResponseDTO>builder()
+            .success(true)
+            .message("Se inicio sesion correctamente")
+            .data(authresponse)
+            .build();
         return ResponseEntity.ok(apiresponse);
     }
 
@@ -51,5 +54,12 @@ public class AuthController {
         authService.register(request);
         return ResponseEntity.ok("Usuario registrado exitosamente");
     }
+
+    @PostMapping("logout")
+    public void logout(HttpServletResponse response) {
+        final Cookie cookie = new Cookie("jwt", null);
+        cookie.setMaxAge(0);
+    }
+    
     
 }

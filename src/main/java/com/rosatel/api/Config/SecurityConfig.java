@@ -3,6 +3,7 @@ package com.rosatel.api.Config;
 import com.rosatel.api.Jwt.JwtFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -37,6 +38,14 @@ public class SecurityConfig {
                     .requestMatchers("/productos/**").permitAll()
                     .anyRequest().permitAll()
                 )
+            .logout(logout -> logout
+                        .logoutUrl("/auth/logout")
+                        .deleteCookies("jwt")
+                        .clearAuthentication(true)
+                        .invalidateHttpSession(true)
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(HttpStatus.NO_CONTENT.value());
+                    }))
             .formLogin(formLogin -> formLogin.disable())
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
             .build();

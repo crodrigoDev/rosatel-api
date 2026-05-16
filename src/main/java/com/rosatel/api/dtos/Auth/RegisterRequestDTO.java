@@ -1,4 +1,4 @@
-package com.rosatel.api.dtos;
+package com.rosatel.api.dtos.Auth;
 
 public record RegisterRequestDTO(
     String email,
