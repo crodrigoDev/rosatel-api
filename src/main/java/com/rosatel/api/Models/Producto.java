@@ -25,13 +25,13 @@ public class Producto extends BaseEntity {
     @Column(name = "precio", nullable = false, precision = 10, scale = 2)
     private BigDecimal precio;
     private Integer stock;
-    private String imagen_url;
+    @Column(name = "imagen_url", nullable = true)
+    private String imagenUrl;
     
     @ManyToOne
     @JoinColumn(name = "id_subcategoria", insertable = false, updatable = false)
     @JsonBackReference("subcategoria-productos")
     private Subcategoria subcategoria;
-    private Integer id_subcategoria;
 
     @ManyToMany
     @JsonIgnore

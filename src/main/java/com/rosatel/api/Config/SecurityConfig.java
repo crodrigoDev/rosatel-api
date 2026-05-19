@@ -1,6 +1,9 @@
 package com.rosatel.api.Config;
 
 import com.rosatel.api.Jwt.JwtFilter;
+
+import java.util.List;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -13,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
 
 import lombok.RequiredArgsConstructor;
 
@@ -28,8 +32,22 @@ public class SecurityConfig {
     }
 
     @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         return http
+            .cors(cors -> cors.configurationSource(request -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowCredentials(true);
+                    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                    config.setAllowedHeaders(List.of("Content-Type", "Authorization", "Accept", "Origin"));
+                    config.setAllowedOrigins(List.of("http://localhost:3000"));
+                    return config;
+                })
+            )
             .csrf(csrf -> csrf.disable())
             .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(authRequest ->
@@ -40,7 +58,7 @@ public class SecurityConfig {
                 )
             .logout(logout -> logout
                         .logoutUrl("/auth/logout")
-                        .deleteCookies("jwt")
+                        .deleteCookies("AUTH_ROSATEL")
                         .clearAuthentication(true)
                         .invalidateHttpSession(true)
                         .logoutSuccessHandler((request, response, authentication) -> {
@@ -49,10 +67,5 @@ public class SecurityConfig {
             .formLogin(formLogin -> formLogin.disable())
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
-    }
-
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
     }
 }

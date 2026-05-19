@@ -14,11 +14,13 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 
 @Service
 public class JwtService {
     private final String SECRET_KEY = "989340dad090dd09da00d9067891faf8f9900daddad0";
-    private final long EXPIRATION = 86400000;
+    private final int EXPIRATION = 86400000;
 
 
     public String generateToken(Usuario usuario){
@@ -33,6 +35,16 @@ public class JwtService {
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
                 .signWith(Keys.hmacShaKeyFor(SECRET_KEY.getBytes()), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public Cookie crearJwtCookie(String token, HttpServletResponse response){
+        Cookie cookie = new Cookie("AUTH_ROSATEL", token);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setSecure(false);
+        cookie.setMaxAge(EXPIRATION / 1000);
+        response.addCookie(cookie);
+        return cookie;
     }
 
     public String extraerEmail(String token){

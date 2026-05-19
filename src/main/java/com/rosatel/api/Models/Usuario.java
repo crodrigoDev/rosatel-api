@@ -40,7 +40,10 @@ public class Usuario extends BaseEntity implements UserDetails{
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.emptyList();
     }
-
+    @Override
+    public String getUsername() {
+        return email;
+    }
     @Override
     public boolean isAccountNonExpired(){
         return true;
@@ -61,10 +64,6 @@ public class Usuario extends BaseEntity implements UserDetails{
         return true;
     }
 
-    @Override
-    public String getUsername() {
-        return email;
-    }
 
     
 }

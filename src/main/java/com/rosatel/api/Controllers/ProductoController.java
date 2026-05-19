@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 
+
 @RestController
 @RequestMapping("/productos")
 @RequiredArgsConstructor
@@ -35,7 +36,7 @@ public class ProductoController {
                 .id(p.getId())
                 .detalle(p.getDetalle())
                 .precio(p.getPrecio())
-                .imagen_url(p.getImagen_url())
+                .imagen_url(p.getImagenUrl())
                 .build())
             .toList();
         return ResponseEntity.ok(new ApiResponse<List<ProductoDTO>>(true, null, productos));
@@ -56,7 +57,7 @@ public class ProductoController {
                 .descripcion(producto.getDescripcion())
                 .precio(producto.getPrecio())
                 .stock(producto.getStock())
-                .imagen_url(producto.getImagen_url())
+                .imagen_url(producto.getImagenUrl())
                 .colores(colores)
                 .build();
         return ResponseEntity.ok(new ApiResponse<>(true, "Producto obtenido", detalleProducto));
@@ -72,13 +73,32 @@ public class ProductoController {
                     .id(p.getId())
                     .detalle(p.getDetalle())
                     .precio(p.getPrecio())
-                    .imagen_url(p.getImagen_url())
+                    .imagen_url(p.getImagenUrl())
                     .build()
                 )
                 .toList();
         if(productos.isEmpty()) return ResponseEntity.notFound().build();
         return ResponseEntity.ok(new ApiResponse<>(true, "Productos obtenidos", productos));
     }
+
+    @GetMapping("ocasiones/{id}")
+    public ResponseEntity<ApiResponse<List<ProductoDTO>>> productosByOcasion(@PathVariable Integer id) {
+        List<ProductoDTO> productos = productoService.getProductosByOcasiones(id)
+                .stream()
+                .map(p -> 
+                    ProductoDTO
+                    .builder()
+                    .id(p.getId())
+                    .detalle(p.getDetalle())
+                    .precio(p.getPrecio())
+                    .imagen_url(p.getImagenUrl())
+                    .build()
+                )
+                .toList();
+        if(productos.isEmpty()) return ResponseEntity.notFound().build();
+        return ResponseEntity.ok(new ApiResponse<>(true, "Productos obtenidos", productos));
+    }
+    
     
     
 }

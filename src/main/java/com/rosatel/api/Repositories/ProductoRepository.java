@@ -10,4 +10,5 @@ import com.rosatel.api.Models.Producto;
 public interface ProductoRepository extends JpaRepository<Producto, Integer>, JpaSpecificationExecutor<Producto>{
     List<Producto> findBySubcategoriaId(Integer idSubcategoria);
     List<Producto> findBySubcategoria_Categoria_Id(Integer idCategoria);
+    List<Producto> findByOcasiones_Id(Integer idOcasion);
 }

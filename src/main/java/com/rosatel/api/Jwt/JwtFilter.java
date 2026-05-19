@@ -31,6 +31,7 @@ public class JwtFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         
         String token = null;
+        String email = null;
         if(request.getCookies() != null){
             token = Arrays.stream(request.getCookies())
                         .filter(c -> "jwt".equals(c.getName()))
@@ -39,13 +40,8 @@ public class JwtFilter extends OncePerRequestFilter {
                         .orElse(null);
         }
 
-        if(token == null){
-            filterChain.doFilter(request, response);
-            return;
-        }
-
-        if(SecurityContextHolder.getContext().getAuthentication() == null){
-            String email = jwtService.extraerEmail(token);
+        if(token != null && SecurityContextHolder.getContext().getAuthentication() == null){
+            email = jwtService.extraerEmail(token);
             if(email != null){
                 UserDetails userDetails = userDetailsService.loadUserByUsername(email);
                 if(jwtService.isTokenValid(token, userDetails)){
@@ -57,5 +53,4 @@ public class JwtFilter extends OncePerRequestFilter {
         }
         filterChain.doFilter(request, response);
     }
-    
 }
